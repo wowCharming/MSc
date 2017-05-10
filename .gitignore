@@ -1,0 +1,11 @@
+int SLICES = 1000000000; // 1 billion double 
+delta_x = 1./SLICES,x,sum=0.,ct,wcs,wce,Pi; 
+timing(&wcs, &ct); 
+for (int i=0; i < SLICES; i++) { 
+x = (i+0.5)*delta_x; 
+sum += (4.0 / (1.0 + x * x)); 
+} 
+timing(&wce, &ct); 
+Pi = sum * delta_x; 
+printf(“Pi=%.15lf at %.2lf MFlop/s\n”, Pi,       
+SLICES*6.0/(wce-wcs)*1e-6); 
