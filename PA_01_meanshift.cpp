@@ -135,7 +135,9 @@ int main() {
 	imshow("Original window", img);
 	namedWindow("Denoised window", WINDOW_AUTOSIZE);
 	imshow("Denoised window", img2);
-
+	
+	//save the denoised image
+	//imwrite("../cameraman-denoised.png", img2);
 
 	waitKey(0);
 
