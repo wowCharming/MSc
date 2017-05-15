@@ -1,6 +1,5 @@
 #include<iostream>
-#include<opencv2\opencv.hpp>
-
+#include <opencv2/opencv.hpp>
 //#include<opencv2\core\core.hpp>
 using namespace cv;
 using namespace std;
@@ -125,7 +124,8 @@ int main() {
 		for (int j = 0; j < img.cols; j++) {
 			data[j] = (uchar)img3.MeanShift(i, j);
 			
-		}cout << "line: " <<i<<" complete"<< endl;
+		}
+		cout << "line: " << i+1 << "/" << img.rows << " complete" << endl;
 	}
 
 
@@ -137,7 +137,7 @@ int main() {
 	imshow("Denoised window", img2);
 	
 	//save the denoised image
-	//imwrite("../cameraman-denoised.png", img2);
+	imwrite("./cameraman-denoised.png", img2);
 
 	waitKey(0);
 
