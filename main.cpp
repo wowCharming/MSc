@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
-//#include "time.h"
-#include "timing.h"
+#include "timing.c"
 
-void dummy(double*);
+void dummy(double*a, double*b, double*c, double*d){
+	
+};
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
 					a[i] = b[i] + c[i] * d[i];
 					//if(CONDITION_NEVER_TRUE) dummy(a); // for the compiler
 				}
-				if (a[i]<0)
+				if (a[r]<0)
 				{
 					dummy(a,b,c,d);
 				}
