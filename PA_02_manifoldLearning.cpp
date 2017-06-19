@@ -53,8 +53,8 @@ int main(int argc, char** argv)
 	Draw2DManifold(dataIsomap,"ISOMAP",nSamplesI,nSamplesJ);
 
 	//LLE
-	//Mat dataLLE = reduceLLE(dataMatrix,2);
-	//Draw2DManifold(dataLLE,"LLE",nSamplesI,nSamplesJ);
+	Mat dataLLE = reduceLLE(dataMatrix,2);
+	Draw2DManifold(dataLLE,"LLE",nSamplesI,nSamplesJ);
 
 	waitKey(0);
 
@@ -84,7 +84,6 @@ Mat reducePCA(Mat &dataMatrix, unsigned int dim)
 
 	return dataMatrix0;
 }
-
 
 Mat reduceLLE(Mat &dataMatrix, unsigned int dim)
 {
@@ -124,7 +123,7 @@ Mat reduceLLE(Mat &dataMatrix, unsigned int dim)
 			//double* data_x = dataMatrix.ptr<double>(sort_result0[x].first);//Xx
 
 			//Zi
-			//pad part: use const 123 but dinamic vals  
+			//(solved)pad part: use const 123 but dinamic vals  
 			Mat A;
 			for (int y = 0; y < k; y++)
 			{
@@ -166,6 +165,7 @@ Mat reduceLLE(Mat &dataMatrix, unsigned int dim)
 
 	return Y.t();
 }
+
 
 Mat reduceIsomap(Mat &dataMatrix, unsigned int dim)
 {
