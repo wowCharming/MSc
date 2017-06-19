@@ -136,6 +136,8 @@ Mat reduceLLE(Mat &dataMatrix, unsigned int dim)
 				data[y] = A.at<double>(0, 0);
 			}//cout << A;
 		}
+		Mat I0 = Mat::eye(k, k, CV_64F);
+		Zi += I0 *(float)(0.01 / k) * trace(Zi)[0];
 
 		//Wi;
 		Wi = Zi.inv(DECOMP_SVD) * e_k / (e_k.t()*Zi.inv(DECOMP_SVD)*e_k);//size: k * 1
