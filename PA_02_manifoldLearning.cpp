@@ -1,8 +1,8 @@
-﻿#include <opencv2\core\core.hpp>
-#include <opencv2\highgui\highgui.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <map>
-#include <opencv2\imgproc\imgproc.hpp>//need to be added to do line, circle
+#include <opencv2/imgproc/imgproc.hpp>//need to be added to do line, circle
 #include <numeric>// for accumulate in isomap MDS
 
 using namespace cv;
@@ -45,15 +45,15 @@ int main(int argc, char** argv)
 	Draw3DManifold(dataMatrix, "3D Points", nSamplesI, nSamplesJ);
 
 	// PCA
-	//Mat dataPCA = reducePCA(dataMatrix,2);
-	//Draw2DManifold(dataPCA,"PCA",nSamplesI,nSamplesJ);
+	Mat dataPCA = reducePCA(dataMatrix,2);
+	Draw2DManifold(dataPCA,"PCA",nSamplesI,nSamplesJ);
 
 	// Isomap
-	//Mat dataIsomap = reduceIsomap(dataMatrix,2);
-	//Draw2DManifold(dataIsomap,"ISOMAP",nSamplesI,nSamplesJ);
+	Mat dataIsomap = reduceIsomap(dataMatrix,2);
+	Draw2DManifold(dataIsomap,"ISOMAP",nSamplesI,nSamplesJ);
 
 	//LLE
-	Mat dataLLE = reduceLLE(dataMatrix,2);
+	//Mat dataLLE = reduceLLE(dataMatrix,2);
 	//Draw2DManifold(dataLLE,"LLE",nSamplesI,nSamplesJ);
 
 	waitKey(0);
@@ -250,7 +250,7 @@ Mat reduceIsomap(Mat &dataMatrix, unsigned int dim)
 	N.setTo(0.0);
 
 	cv::sort(eValues, eValues, CV_SORT_DESCENDING);
-	cout << U;
+	//cout << U;
 	double* data0 = eValues.ptr<double>(0);
 	N.at<double>(0, 0) = sqrt(data0[0]);
 	data0 = eValues.ptr<double>(1);
