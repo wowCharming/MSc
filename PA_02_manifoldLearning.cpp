@@ -85,6 +85,7 @@ Mat reducePCA(Mat &dataMatrix, unsigned int dim)
 	return dataMatrix0;
 }
 
+
 Mat reduceLLE(Mat &dataMatrix, unsigned int dim)
 {
 	int k = 12;
@@ -95,43 +96,76 @@ Mat reduceLLE(Mat &dataMatrix, unsigned int dim)
 	//for (int i = 0; i < sort_result.size(); i++){cout << "==============" << i << endl;
 	//for (const auto &p : sort_result[i]) { cout << p.first << "="<< p.second << endl;}}
 
-	//Mat Zi(k, k, CV_64F);//??????CV_8U CV_32F CV_64F
-	//
-	////resort by distance from small to large
-	//struct CmpByValue {
-	//	bool operator()(const pair<int, double> & lhs, const pair<int, double> & rhs)
-	//	{
-	//		return lhs.second < rhs.second;
-	//	}
-	//};
-	//
-	//for (int i = 0; i < m; i++) {
-	//	//cout << "==============" << i << endl;
-	//	
-	//	vector<pair<int, double>> sort_result0(sort_result[i].begin(), sort_result[i].end());
-	//	sort(sort_result0.begin(), sort_result0.end(), CmpByValue());
+	
+	//define: CmpByValue(); resort by distance from small to large
+	struct CmpByValue {
+		bool operator()(const pair<int, double> & lhs, const pair<int, double> & rhs)
+		{
+			return lhs.second < rhs.second;
+		}
+	};
+	
+	Mat Zi(k, k, CV_64F);//??????CV_8U CV_32F CV_64F
+	Mat e_k(k, 1, CV_64F);
+	e_k.setTo(1.0);
+	Mat Wi(k, 1, CV_64F);
+	Mat W(m, m, CV_64F);
+	W.setTo(0.0);
+	for (int i = 0; i < m; i++) {
+		//cout << "==============" << i << endl;
+		double* data_i = dataMatrix.ptr<double>(i);//Xi
 
-	//	for (int x = 0; x < sort_result0.size(); ++x) {//k=12
-	//		cout << sort_result0[x].first << "=" << sort_result0[x].second << endl;
-	//		double* data = Zi.ptr<double>(x);
-	//		for (int y = 0; y < k; y++)
-	//		{
-	//			data[y] =
-	//		}
+		vector<pair<int, double>> sort_result0(sort_result[i].begin(), sort_result[i].end());
+		sort(sort_result0.begin(), sort_result0.end(), CmpByValue());
 
-	//	}
-	//	
-	//}
+		for (int x = 0; x < sort_result0.size(); ++x) {//.size=k=12
+			//cout << sort_result0[x].first << "=" << sort_result0[x].second << endl;
+			double* data = Zi.ptr<double>(x);
+			//double* data_x = dataMatrix.ptr<double>(sort_result0[x].first);//Xx
 
+			//Zi
+			//pad part: use const 123 but dinamic vals  
+			Mat A;
+			for (int y = 0; y < k; y++)
+			{
+				//double* data_y = dataMatrix.ptr<double>(sort_result0[y].first);//Xy
 
+				/*data[y] = (data_i[0] - data_x[0])*(data_i[0] - data_y[0]) +
+						  (data_i[1] - data_x[1])*(data_i[1] - data_y[1]) +
+						  (data_i[2] - data_x[2])*(data_i[2] - data_y[2]);*/
+				A = (dataMatrix.rowRange(i, i + 1) - dataMatrix.rowRange(sort_result0[x].first, sort_result0[x].first + 1))*(dataMatrix.rowRange(i, i + 1) - dataMatrix.rowRange(sort_result0[y].first, sort_result0[y].first + 1)).t();
+				data[y] = A.at<double>(0, 0);
+			}//cout << A;
+		}
 
+		//Wi;
+		Wi = Zi.inv(DECOMP_SVD) * e_k / (e_k.t()*Zi.inv(DECOMP_SVD)*e_k);//size: k * 1
+		
+		//W
+		double* result = W.ptr<double>(i);
+		for (int x = 0; x < sort_result0.size(); ++x) {//.size=k=12
+			result[sort_result0[x].first] = Wi.at<double>(0, x);
+		}
+	}
+	//cout << W;
 
+	Mat I = Mat::eye(m, m, CV_64F);
+	Mat M = (I - W).t() * (I - W);
+	Mat eValues, eVectors;
+	Mat Y;
+	eigen(M, eValues, eVectors);//the eigenvectors are stored as subsequent matrix rows
+	Mat Y1 = eVectors.rowRange(m - 2, m - 1).clone();
+	Mat Y2 = eVectors.rowRange(m - 3, m - 2).clone();
+	//cout << eVectors<<endl;
+	vconcat(Y1, Y2, Y);
+	//cout << eValues;
+	//cout << Y;
 
+	//normalize the result to draw
+	normalize(Y, Y, -0.5, 0.5, NORM_MINMAX);
 
-
-	return dataMatrix;
+	return Y.t();
 }
-
 
 Mat reduceIsomap(Mat &dataMatrix, unsigned int dim)
 {
