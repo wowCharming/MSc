@@ -24,8 +24,8 @@ int main(int argc, char** argv)
 	vector<Mat> densityXY;
 
 	densityXY.push_back(densityForest(n_levels, n_thresholds, 1, dataMatrix));
-	//densityXY.push_back(densityForest(n_levels, n_thresholds, 50, dataMatrix));
-	//densityXY.push_back(densityForest(n_levels, n_thresholds, 100, dataMatrix));
+	densityXY.push_back(densityForest(n_levels, n_thresholds, 50, dataMatrix));
+	densityXY.push_back(densityForest(n_levels, n_thresholds, 100, dataMatrix));
 
 	plotDensities(dataMatrix, densityXY, 0, "Densities X");
 	plotDensities(dataMatrix, densityXY, 1, "Densities Y");
