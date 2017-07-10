@@ -91,7 +91,7 @@ void DensityTree::train()
 	//cout << "points.size:" << result.getValueVector().size() << endl;
 	//cout << "index:" << index << endl;
 
-	int index1 = -1;
+	int index1 = 0;
 	for (int a = 0; a < D-1; a++)//1,1+2,1+2+4
 	{
 		index1 += pow(2, a); 
@@ -100,16 +100,22 @@ void DensityTree::train()
 	//cout << "=======================" << endl;
 
 	vector<Mat> LR = result.getMatVector();
+
 	//cout << LR.size() << endl;
-	//for (int i = 0; i < LR.size(); i++) { cout << LR[i] << endl; }
-	vector<Mat> leafNodes0(&LR[index1], &LR[index1 + N]);//vector<Mat> 
+	//for (int i = 0; i < LR.size(); i++) { cout << LR[i].rows << endl; }
+	vector<Mat> leafNodes0;
+	leafNodes0.assign(LR.begin()+index1, LR.end());//vector<Mat>  &LR[index1 + N]
 	leafNodes = leafNodes0;
 	//cout <<"leafNodes.size:"<< leafNodes.size() << endl;
-
+	//for (int i = 0; i < leafNodes.size(); i++) { cout << leafNodes[i].rows << endl; }
 	//store the data: means & variances
 	double mean;
 	for (int i = 0; i < N; i++)
 	{
+		/*Scalar meanXX, sdX;
+		meanStdDev(leafNodes[i].col(0), meanXX, sdX);
+		meansX.push_back(meanXX[0]);
+		variancesX.push_back(pow(sdX[0],2));*/
 		mean = getMean(leafNodes[i], 0);
 		meansX.push_back(mean);
 		variancesX.push_back(getVariance(leafNodes[i], mean, 0));
@@ -123,6 +129,8 @@ void DensityTree::train()
 	//cout << "=======================" << endl;
 	//cout << "means.size:" << meansX.size() << endl;
 	//cout << "variances.size:" << variancesX.size() << endl;
+	//for (int i = 0; i < meansX.size(); i++) { cout << meansX[i] << endl; }
+	//for (int i = 0; i < variancesX.size(); i++) { cout << variancesX[i] << endl; }
 }
 
 Mat DensityTree::densityXY()
@@ -135,7 +143,6 @@ Mat DensityTree::densityXY()
 	int XorY1 = 0, index, index_p = 0;
 
 	Mat Answer(X.rows, X.cols, CV_64F);
-
 	for (int s = 0; s < X.rows; s++)//each sample
 	{
 		index = 0;
@@ -150,21 +157,22 @@ Mat DensityTree::densityXY()
 			XorY1 = n % 2;
 			index *= 2;
 
-
-			if (data[XorY1] >= points[index_p])//bigger to left
+			if (data[XorY1] <= points[index_p])//bigger to left //problem here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			{
 				index += 1;//like binary
-				index_p += n+1;
+				index_p += n + 1; 
 			}
+			
 			//cout << "index:" << index << endl;
 
 		}
-		double ansX = (float)(1 / sqrt(variancesX[index] * 2 * PI)) * exp(-(data[0] - meansX[index])*(data[0] - meansX[index]) / (2 * variancesX[index]));
-		double ansY = (float)(1 / sqrt(variancesY[index] * 2 * PI)) * exp(-(data[1] - meansY[index])*(data[1] - meansY[index]) / (2 * variancesY[index]));
-		data1[0] = (float)ansX * leafNodes[index].rows / X.rows;//adding The scalar which is the proportion of all training points that reach the leaf
-		data1[1] = (float)ansY * leafNodes[index].rows / X.rows;
-	}
+		double ansX = (double)(1 / sqrt(variancesX[index] * 2 * PI)) * exp(-0.5*pow(data[0] - meansX[index],2)/variancesX[index]);
+		double ansY = (double)(1 / sqrt(variancesY[index] * 2 * PI)) * exp(-(data[1] - meansY[index])*(data[1] - meansY[index]) / (2 * variancesY[index]));
+		data1[0] = (double)ansX *leafNodes[index].rows / X.rows;//adding The scalar which is the proportion of all training points that reach the leaf
+		data1[1] = (double)ansY *leafNodes[index].rows / X.rows;
+		
 
+	}
     return Answer;
 }
 
@@ -185,7 +193,6 @@ ResultVectors splitFunction(int index, int XorY, int n_thresholds, ResultVectors
 	double splitPoint = 0.0, InfoGain = 0.0;
 	for (int i = 0; i < n_thresholds; i++)
 	{
-		InfoGain = 0.0;
 		//srand((unsigned)time(NULL));
 		double randNo = rand() / double(RAND_MAX);//double from 0 to 1
 		double point = minv + range * randNo;
@@ -211,7 +218,7 @@ ResultVectors splitFunction(int index, int XorY, int n_thresholds, ResultVectors
 		}//cout << leftSet << countX <<endl;
 		//cout << getInfoGain(input, leftSet, rightSet) << endl;
 		//eliminate the situation that oneside has no point in fcn(getInfoGain)//leftSet.rows * rightSet.rows > 0
-		if (InfoGain < getInfoGain(input, leftSet, rightSet))
+		if (InfoGain < getInfoGain(input, leftSet, rightSet))//todo <=0 better?
 		{
 			InfoGain = getInfoGain(input, leftSet, rightSet);//, countX, countY);//leftSet.rows, rightSet.rows
 			leftResult = leftSet;
@@ -219,6 +226,7 @@ ResultVectors splitFunction(int index, int XorY, int n_thresholds, ResultVectors
 			splitPoint = point;
 		}
 	}
+	//cout <<"infogain:"<< InfoGain << endl;
 	//points.push_back(splitPoint);
 	//vector<Mat> LR;
 	//LR.push_back(leftResult);
@@ -266,6 +274,7 @@ double getDensity(double value, double mean, double variance)
 double getInfoGain(Mat whole, Mat left, Mat right)//, int countX, int countY)
 {
 	Mat covarWhole, covarLeft, covarRight, mean;
+	double I = 0.0;
 	int countX = left.rows;
 	int countY = right.rows;
 	if (countX*countY == 0)//eliminate the situation that oneside has no point by return 0
@@ -287,7 +296,7 @@ double getInfoGain(Mat whole, Mat left, Mat right)//, int countX, int countY)
 		rightInfo = 0.0;
 	}
 
-	double I = log(determinant(covarWhole)) - ((double)countX / whole.rows)*leftInfo -
+	I = log(determinant(covarWhole)) - ((double)countX / whole.rows)*leftInfo -
 		((double)countY / whole.rows)*rightInfo;
 
 	return I;
