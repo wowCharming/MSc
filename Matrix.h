@@ -133,7 +133,7 @@ Matrix Matrix::operator+ (const Matrix & m)
 	}
 
 	return m0;
-};
+}
 
 Matrix Matrix::operator- (const Matrix & m)
 {
@@ -149,7 +149,7 @@ Matrix Matrix::operator- (const Matrix & m)
 	}
 
 	return m0;
-};
+}
 
 Matrix Matrix::operator* (const Matrix & m)
 {
@@ -171,7 +171,7 @@ Matrix Matrix::operator* (const Matrix & m)
 	}
 
 	return m0;
-};
+}
 
 Matrix Matrix::operator+= (const Matrix & m)
 {
