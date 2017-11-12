@@ -20,7 +20,8 @@ int main(int argc, char** argv)
 	double temp;
 
 	cout << "please input menbers of m1" << endl;
-	for (int i = 0; i < s1; i++)
+	cin >> m1;
+	/*for (int i = 0; i < s1; i++)
 	{
 		for (int j = 0; j < s2; j++)
 		{
@@ -29,10 +30,11 @@ int main(int argc, char** argv)
 			m1(i, j) = temp;
 		}
 
-	}
+	}*/
 
 	cout << "please input menbers of m2" << endl;
-	for (int i = 0; i < s2; i++)
+	cin >> m2;
+	/*for (int i = 0; i < s2; i++)
 	{
 		for (int j = 0; j < s3; j++)
 		{
@@ -41,7 +43,7 @@ int main(int argc, char** argv)
 			m2(i, j) = temp;
 		}
 
-	}
+	}*/
 
 	m3 = m1 * m2;
 	
