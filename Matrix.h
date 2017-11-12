@@ -51,25 +51,25 @@ public:
 		//do not work
 		/*for (int i = 0; i < m.row; i++)
 		{
-			for (int j = 0; j < m.col; j++)
-			{
-				data_[i * col + j] = m.data_[i * col + j];
-			}
+		for (int j = 0; j < m.col; j++)
+		{
+		data_[i * col + j] = m.data_[i * col + j];
+		}
 		}*/
 	}
 
 
 	~Matrix()
 	{
-		delete [] data_;
+		delete[] data_;
 	};
 
-	int getColumns() const
+	int cols() const
 	{
 		return col;
 	}
 
-	int getRows() const
+	int rows() const
 	{
 		return row;
 	}
@@ -235,7 +235,7 @@ bool Matrix::operator== (const Matrix & m)
 			for (int j = 0; j < col; j++)
 			{
 				if (std::abs((i, j) - m(i, j)) > 1e-13)
-				//if (data_[i * col + j] != m.data_[i * col + j])
+					//if (data_[i * col + j] != m.data_[i * col + j])
 				{
 					return false;
 				}
@@ -257,8 +257,8 @@ bool Matrix::operator!= (const Matrix & m)
 
 std::ostream & operator<<(std::ostream & os, const Matrix & m)
 {
-	int C = m.getColumns();
-	int R = m.getRows();
+	int C = m.cols();
+	int R = m.rows();
 	for (int i = 0; i < R; i++)
 	{
 		for (int j = 0; j < C; j++)
@@ -270,3 +270,14 @@ std::ostream & operator<<(std::ostream & os, const Matrix & m)
 	return os;
 }
 
+std::istream & operator>> (std::istream& is, Matrix & m)
+{
+	for (int i = 0; i < m.rows(); ++i)
+	{
+		for (int j = 0; j < m.cols(); ++j)
+		{
+			is >> m(i, j);
+		}
+	}
+	return is;
+}
