@@ -44,7 +44,7 @@ public:
 	}
 
 	// copy constructor implementation
-	Matrix::Matrix(const Matrix& m) {
+	Matrix(const Matrix& m) {
 		//int size = m.rows() * m.cols(); no size here because it is dynamic
 		row = m.rows();
 		col = m.cols();
