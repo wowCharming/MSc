@@ -67,7 +67,7 @@ public:
 		return row;
 	}
 
-	double & operator() (int i, int j) const//problem here:&
+	const double & operator() (int i, int j) const//problem here:&
 	{
 		assert(i >= 0 && i < row && j >= 0 && j < col);
 		return data_[i * col + j];
