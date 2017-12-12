@@ -23,7 +23,7 @@ def house(A):
 	return W, R
 
 def formQ(W):
-	m, n = np.shape(A)
+	m, n = np.shape(W)
 	Q = np.identity(m)
 	for i in range(m):
 		#x = Q[:,i]
