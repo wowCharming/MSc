@@ -7,7 +7,7 @@
 #define PI 3.141592653589793
 using namespace chrono;
 
-const size_t number = 65;
+const size_t number = 129;
 
 template<typename T, typename MatrixImpl, size_t numPoints>
 void solve (const MatrixLike<T, MatrixImpl, numPoints, numPoints>& A, const Vector<T, numPoints>& b, Vector<T, numPoints>& u) {//Matrix<T, rows, cols> , numPoints, numPoints
