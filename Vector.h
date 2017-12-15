@@ -6,6 +6,7 @@
 #include <vector>  
 #include <string>
 #include <array>
+#include <cmath>
 
 using namespace std;
 using std::vector;
@@ -44,9 +45,9 @@ public:
 	~Vector()
 	{
 		//delete [] data_;
-	};
+	}
 
-	T operator() (int i) const
+	const T & operator() (int i) const
 	{
 		assert(i >= 0 && i < LEN);
 		return data_[i];
@@ -59,13 +60,13 @@ public:
 	}
 
 	Vector<T, LEN> & operator= (const Vector<T, LEN> & v);
-	Vector<T, LEN> operator+(const Vector<T, LEN> & v);
+	Vector<T, LEN> operator+(const Vector<T, LEN> & v)const;
 	Vector<T, LEN> operator-(const Vector<T, LEN> & v)const;
 
-	Vector<T, LEN> operator+=(const Vector<T, LEN> & v);
-	Vector<T, LEN> operator-=(const Vector<T, LEN> & v);
-	bool operator==(const Vector<T, LEN> & v);
-	bool operator!=(const Vector<T, LEN> & v);
+	Vector<T, LEN> & operator+=(const Vector<T, LEN> & v);
+	Vector<T, LEN> & operator-=(const Vector<T, LEN> & v);
+	bool operator==(const Vector<T, LEN> & v)const;
+	bool operator!=(const Vector<T, LEN> & v)const;
 
 
 	double l2Norm() const
@@ -109,7 +110,7 @@ Vector<T, LEN> &Vector<T, LEN>::operator= (const Vector<T, LEN> & v)
 
 
 template<class T, size_t LEN>
-Vector<T, LEN> Vector<T, LEN>::operator+(const Vector<T, LEN> & v)
+Vector<T, LEN> Vector<T, LEN>::operator+(const Vector<T, LEN> & v) const
 {
 	Vector<T, LEN> v0(0);
 
@@ -133,7 +134,7 @@ Vector<T, LEN> Vector<T, LEN>::operator-(const Vector<T, LEN> & v) const
 }
 
 template<class T, size_t LEN>
-Vector<T, LEN> Vector<T, LEN>::operator+=(const Vector<T, LEN> & v)
+Vector<T, LEN> & Vector<T, LEN>::operator+=(const Vector<T, LEN> & v)
 {
 
 	for (int i = 0; i < LEN; i++)
@@ -144,7 +145,7 @@ Vector<T, LEN> Vector<T, LEN>::operator+=(const Vector<T, LEN> & v)
 }
 
 template<class T, size_t LEN>
-Vector<T, LEN> Vector<T, LEN>::operator-=(const Vector<T, LEN> & v)
+Vector<T, LEN> & Vector<T, LEN>::operator-=(const Vector<T, LEN> & v)
 {
 
 	for (int i = 0; i < LEN; i++)
@@ -155,15 +156,15 @@ Vector<T, LEN> Vector<T, LEN>::operator-=(const Vector<T, LEN> & v)
 }
 
 template<class T, size_t LEN>
-bool Vector<T, LEN>::operator== (const Vector<T, LEN> & v)
+bool Vector<T, LEN>::operator== (const Vector<T, LEN> & v) const
 {
 	if (this->LEN == v.LEN)
 	{
 		for (int i = 0; i < LEN; i++)
 		{
 
-			if (std::abs((i)-v(i)) > 1e-13)//data_[i]
-										   //if (data_[i * col + j] != m.data_[i * col + j])
+			//if (std::abs((i)-v(i)) > 1e-13)//data_[i]
+			if (data_[i] != v.data_[i])
 			{
 				return false;
 			}
@@ -179,7 +180,7 @@ bool Vector<T, LEN>::operator== (const Vector<T, LEN> & v)
 }
 
 template<class T, size_t LEN>
-bool Vector<T, LEN>::operator!= (const Vector<T, LEN> & v)
+bool Vector<T, LEN>::operator!= (const Vector<T, LEN> & v) const
 {
 	return !(operator==(v));
 }

@@ -6,6 +6,8 @@ using namespace std;
 // forward declarations
 template<typename T, size_t LEN>
 class Vector;
+//template<typename T, size_t ROWS, size_t COLS>
+//class Matrix;
 
 template<typename T, class Derived, size_t ROWS, size_t COLS>
 class MatrixLike {
@@ -15,18 +17,10 @@ public:
 
 	/// virtual operators
 	virtual Vector<T, ROWS> operator* (const Vector<T, COLS> & o) const = 0;
+	//virtual Matrix<T, ROWS, 1> operator* (const Matrix<T, COLS, 1> & o) const = 0;
+
 	// feel free to extend as required
-	/*
-	virtual Derived & operator= (const Derived & o) = 0;
-	virtual Derived operator+ (const Derived & o) = 0;
-	virtual Derived operator- (const Derived & o) = 0;
-	virtual Derived operator* (const Derived & o) = 0;
-	virtual Derived operator+= (const Derived & o) = 0;
-	virtual Derived operator-= (const Derived & o) = 0;
-	virtual Derived operator*= (const Derived & o) = 0;
-	virtual bool operator== (const Derived & o) = 0;
-	virtual bool operator!= (const Derived & o) = 0;	
-	*/
+
 	// TODO: optimize the () operator
 	//virtual const T & operator() (int r, int c) const = 0;
 	//virtual T & operator() (int r, int c) = 0;
