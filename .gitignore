@@ -1,11 +1,14 @@
 CV
 build/
 CMakeLists.txt.user
+<<<<<<< HEAD
 img.jpg
 blue.png
 green.png
 red.png
 small.jpg
+=======
+>>>>>>> cv03/master
 Makefile
 CMakeCache.txt
 CMakeFiles/
